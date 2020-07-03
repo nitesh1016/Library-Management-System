@@ -230,7 +230,7 @@ void modifybook() //updating book
 {
 	char n[6];
 	int found = 0;
-	clrscr();
+	system("cls");
 	cout << endl<< endl<< "Modify Book Record ";
 	cout << endl<< endl<< "Enter the Book Number ";
 	cin >> n;
@@ -245,7 +245,7 @@ void modifybook() //updating book
 			int pos = -1*sizeof(bk);
 			fp.write((char*)&bk,sizeof(book));
 			fp.seekp(pos,ios::cur);
-			cout<<endl<<end<<"Record Updated";
+			cout<<endl<<endl<<"Record Updated";
 			found=1;
 
 		}
@@ -263,7 +263,7 @@ void modifystudent() //updating student
 {
 	char n[6];
 	int found = 0;
-	clrscr();
+	system("cls");
 	cout << endl<< endl<< "Modify Student Record ";
 	cout << endl<< endl<< "Enter Admission  Number ";
 	cin >> n;
@@ -275,10 +275,10 @@ void modifystudent() //updating student
 			st.showstudent();
 			cout<<endl<<"Enter the new details of the Student "<<endl;
 			st.modifystudent();
-			int pos = -1*sizeof(st);
+			int pos = -1*sizeof(st );
 			fp.write((char*)&st,sizeof(student));
 			fp.seekp(pos,ios::cur);
-			cout<<endl<<end<<"Record Updated";
+			cout<<endl<<endl<<"Record Updated";
 			found=1;
 
 		}
@@ -290,6 +290,107 @@ void modifystudent() //updating student
 	}
 	getch();
 }
+
+void deletestudent()
+{
+	char n[6];
+	int flag=0;
+	system("cls");
+	cout<<endl<<endl<<endl<<"Delete Student";
+	cout<<endl<<"Enter the Admission Number";
+	cin>>n;
+	fp.open("student.txt",ios::in|ios::out);
+	fstream fp2;
+	fp2.open("temp.txt",ios::out);
+	fp.seekg(0,ios::beg);
+	while(fp.read((char*)&st,sizeof(student)))
+	{
+		if(strcmpi(st.retadmno(),n)!=0)
+		{
+			fp2.write((char*)&st,sizeof(student));
+		}
+		else
+		{
+			flag=1;
+		}
+	}
+	fp.close();
+	fp2.close();
+	remove("student.txt");
+	rename("temp.txt","student.txt");
+	if(flag==1)
+	{
+		cout<<endl<<endl<<"Record deleted";
+	}
+	else
+	{
+		cout<<endl<<endl<<"Record not found";		
+	}
+	getch();
+}
+
+void deletebook()
+{
+	char n[6];
+	int flag=0;
+	system("cls");
+	cout<<endl<<endl<<endl<<"Delete Book";
+	cout<<endl<<"Enter the Book Number";
+	cin>>n;
+	fp.open("book.txt",ios::in|ios::out);
+	fstream fp2;
+	fp2.open("Temp.txt",ios::out);
+	fp.seekg(0,ios::beg);
+	while(fp.read((char*)&bk,sizeof(book)))
+	{
+		if(strcmpi(bk.retbno(),n)!=0)
+		{
+			fp2.write((char*)&bk,sizeof(book));
+		}
+		else
+		{
+			flag=1;
+		}
+	}
+	fp.close();
+	fp2.close();
+	remove("book.txt");
+	rename("Temp.txt","book.txt");
+	if(flag==1)
+	{
+		cout<<endl<<endl<<"Record deleted";
+	}
+	else
+	{
+		cout<<endl<<endl<<"Record not found";		
+	}
+	getch();
+}
+
+void displayalls()
+{
+	system("cls");
+	fp.open("student.txt",ios::in);
+	if(!fp) //return true
+	{
+		cout<<"File not found";
+		getch();
+		return;
+	}
+	cout<<endl<<endl<<"\t Student List"<<endl<<endl;
+	cout<<"=========================================="<<endl;
+	cout<<"\t Admission Number"<<setw(10)<<"Name"<<setw(20)<<"Book Issued"<<endl;
+	cout<<"================================================="<<endl;
+	
+	while(fp.read((char*)&st,sizeof(student)))	
+	{
+		st.report();
+	}
+	fp.close();
+	getch();
+}
+
+
 
 
 
@@ -427,24 +528,12 @@ int main()
 	do
 	{
 		system("cls");
-		cout << endl
-			 << endl
-			 << "\tMAIN MENU";
-		cout << endl
-			 << endl
-			 << "\t1.Book Issue";
-		cout << endl
-			 << endl
-			 << "\t2.Book Deposit";
-		cout << endl
-			 << endl
-			 << "\t3.Admnistrator Menu";
-		cout << endl
-			 << endl
-			 << "\t4.EXIT";
-		cout << endl
-			 << endl
-			 << "\tPlease Select Your Option between 1-4";
+		cout << endl<< endl<< "\tMAIN MENU";
+		cout << endl<< endl<< "\t1.Book Issue";
+		cout << endl<< endl<< "\t2.Book Deposit";
+		cout << endl<< endl<< "\t3.Admnistrator Menu";
+		cout << endl<< endl<< "\t4.EXIT";
+		cout << endl<< endl << "\tPlease Select Your Option between 1-4";
 		ch = getche();
 		switch (ch)
 		{
