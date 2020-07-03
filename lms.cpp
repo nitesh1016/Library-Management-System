@@ -23,8 +23,7 @@ public:
 		cout << endl
 			 << "Enter the Book Name" << endl;
 		gets(bname);
-		cout << endl
-			 << "Enter the Book Author Name" << endl;
+		cout << endl<< "Enter the Book Author Name" << endl;
 		gets(aname);
 		cout << endl
 			 << endl
@@ -77,11 +76,10 @@ public:
 		system("cls");
 		cout << endl
 			 << "New Student Entry" << endl;
-		cout << endl
-			 << "Enter the Admission number";
+		cout << endl<< "Enter the Admission number";
 		cin >> admno;
-		cout << endl
-			 << "Enter the Student Name";
+		cout << endl<< "Enter the Student Name";
+		cin.ignore();
 		gets(name);
 		token = 0;
 		stbno[0] = '\0';
@@ -116,7 +114,7 @@ public:
 	{
 		return admno;
 	}
-	char *retstbo()
+	char *retstbno()
 	{
 		return stbno;
 	}
@@ -390,6 +388,147 @@ void displayalls()
 	getch();
 }
 
+void displayllb()
+{
+	system("cls");
+	fp.open("book.txt",ios::in);
+	if(!fp)
+	{
+		cout<<"File could not be opened";
+		getch();
+		return;
+	}
+	cout<<endl<<endl<<"\t Book List"<<endl<<endl;
+	cout<<"======================================================================="<<endl;
+	cout<<"Book Number"<<setw(20)<<"Book Name"<<setw(25)<<"Author"<<endl;
+	cout<<"=================================================";
+	while(fp.read((char*)&bk,sizeof(book)))
+	{
+		bk.report();
+	}
+	fp.close();
+	getch();
+}
+
+void bookissue()
+{
+	char sn[6],bn[6];
+	int found=0,flag=0;
+	system("cls");
+	cout<<endl<<endl<<"Book Issue";
+	cout<<endl<<endl<<"Enter Admission Number of Student";
+	cin>>sn;
+	fp.open("student.txt",ios::in|ios::out);
+	fp1.open("book.txt",ios::in|ios::out);
+	while(fp.read((char*)&st,sizeof(student)) && found==0)
+	{
+		if(strcmpi(st.retadmno(),sn)==0)
+		{
+			found=1;
+			if(st.rettoken()==0)
+			{	
+			cout<<endl<<endl<<"Enter the book number";
+			cin>>bn;
+				while(fp1.read((char*)&bk,sizeof(book) && flag==0))
+			
+				{
+					if(strcmpi(bk.retbno(),bn)==0)
+					{
+						flag=1;
+						st.addtoken();
+						st.getstbno(bk.retbno());
+						int pos= -1 * sizeof(st);
+						fp.seekg(pos,ios::cur);
+						fp.write((char*)&st,sizeof(student));
+						cout<<endl<<endl<<"Book issued Successfully "<<endl<<endl<<"Note : Write the Book issue Date inn backside of Your Book and return book within 15 days,Fine Rs.1 for each day after 15 days Perios";
+											
+					}
+					
+				}
+				if(flag==0)
+				{
+					cout<<"Book Number does not exist";
+				}
+			}
+			else
+			{
+				cout<<"You have not returned the last book";
+			}
+		}
+		if(found==0)
+				{
+					cout<<"Student Record does not exist";
+				}
+				getch();
+				fp.close();
+				fp1.close();
+			
+	}
+		
+}
+
+void bookdeposit()
+{
+	char sn[6],bn[6];
+	int found=0,flag=0,day,fine;
+	system("cls");
+	cout<<endl<<endl<<"Book Deposit";
+	cout<<endl<<endl<<"Enter Admission Number of Student";
+	cin>>sn;
+	fp.open("student.txt",ios::in|ios::out);
+	fp1.open("book.txt",ios::in|ios::out);
+	while(fp.read((char*)&st,sizeof(student)) && found==0)
+	{
+		if(strcmpi(st.retadmno(),sn)==0)
+		{
+			found=1;
+			if(st.rettoken()==1)
+			{	
+			
+				while(fp1.read((char*)&bk,sizeof(book) && flag==0))
+			
+				{
+					if(strcmpi(bk.retbno(),st.retstbno())==0)
+					{
+						flag=1;
+						bk.showbook();
+						cout<<endl<<endl<<"Book Deposited in no. of days";
+						cin>>day;
+						if(day>15)
+						{
+							fine=(day-15)*1;
+							cout<<endl<<endl<<"Fine has to be deposited Rs."<<fine;	
+						}
+						st.resettoken();
+						int pos= -1 * sizeof(st);
+						fp.seekg(pos,ios::cur);
+						fp.write((char*)&st,sizeof(student));
+						cout<<endl<<endl<<"Book deposited Successfully "<<endl<<endl;
+											
+					}
+					
+				}
+				if(flag==0)
+				{
+					cout<<"Book Number does not exist";
+				}
+			}
+			else
+			{
+				cout<<"No book is issued";
+			}
+		}
+		if(found==0)
+				{
+					cout<<"Student Record does not exist";
+				}
+				getch();
+				fp.close();
+				fp1.close();
+			
+	}
+		
+}
 
 
 
@@ -473,43 +612,50 @@ void adminmenu()
 	switch (ch2)
 	{
 	case 1:
-
+			writestudent();
 		break;
 	case 2:
-
+			displayalls();
 		break;
 	case 3:
+		{
+		
 		char num[6];
 		system("cls");
-		cout << endl
-			 << endl
-			 << "\t Please Enter the Admission No.";
+		cout << endl<< endl<< "\t Please Enter the Admission No.";
 		cin >> num;
-
+			displaysps(num);
+		}
 		break;
 	case 4:
-
+			modifystudent();
 		break;
 
 	case 5:
+		deletestudent();
 		break;
 	case 6:
+		writebook();
 		break;
 
 	case 7:
-
+			displayllb();
 		break;
 	case 8:
 	{
 
 		char num[6];
 		cin >> num;
+		cout<<endl<<endl<<"Please Enter the book no.";
+		cin>>num;
+		displayspb(num);
 	}
 	break;
 	case 9:
-
+			modifybook();
 		break;
 	case 10:
+		deletebook();
 		break;
 	case 11:
 
@@ -538,9 +684,10 @@ int main()
 		switch (ch)
 		{
 		case '1':
-			//bookissue();
+			bookissue();
 
 		case '2':
+			bookdeposit();
 			break;
 		case '3':
 			adminmenu();
